@@ -1,0 +1,30 @@
+{
+  "name": "workshop-booking-api",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "NODE_ENV=test jest --runInBand",
+    "migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Workshop Booking API - Node.js testing handbook scaffold",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^8.0.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "prisma": "^5.22.0",
+    "supertest": "^7.2.2"
+  }
+}

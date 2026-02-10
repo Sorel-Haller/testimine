@@ -1,0 +1,170 @@
+openapi: 3.0.0
+info:
+  title: Workshop Booking API
+  version: 1.0.0
+  description: API for booking workshops
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Server is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /users:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  example: Ada
+                email:
+                  type: string
+                  example: ada@test.com
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /workshops:
+    post:
+      summary: Create a new workshop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - capacity
+              properties:
+                title:
+                  type: string
+                  example: Node.js Testing
+                capacity:
+                  type: integer
+                  example: 10
+      responses:
+        "201":
+          description: Workshop created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workshop"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /bookings:
+    post:
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - workshopId
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                workshopId:
+                  type: integer
+                  example: 1
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Workshop not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Workshop full or duplicate booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+    Workshop:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        capacity:
+          type: integer
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        workshopId:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
