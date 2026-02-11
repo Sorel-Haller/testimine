@@ -44,7 +44,21 @@ describe("BookingService", () => {
   });
 
   // TODO: Ülesanne 1 — Workshop on täis
-  test.todo("viskab vea kui workshop on täis");
+  test("viskab vea kui workshop on täis", async () => {
+    mockWorkshopRepo.findById.mockResolvedValue({
+      id: 1,
+      title: "Full Workshop",
+      capacity: 5,
+    });
+    mockBookingRepo.countBookings.mockResolvedValue(5);
+    mockBookingRepo.findByUserAndWorkshop.mockResolvedValue(null);
+
+    await expect(bookingService.createBooking(1, 1))
+    .rejects
+    .toThrow("Workshop is full");
+
+    expect(mockBookingRepo.createBooking).not.toHaveBeenCalled();
+  });
 
   // TODO: Ülesanne 2 — Kasutaja on juba broneerinud
   test.todo("viskab vea kui kasutaja on juba broneerinud");

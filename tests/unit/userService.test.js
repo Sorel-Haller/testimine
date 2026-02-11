@@ -14,7 +14,18 @@ describe("UserService", () => {
   });
 
   // TODO: Ülesanne — Kasutaja loomine õnnestub
-  test.todo("loob kasutaja edukalt");
+  test("viskab vea kui workshop on täis", async () => {
+    mockUserRepo.create.mockResolvedValue({
+      id: 1,
+      name: "Test",
+      email: "test@test.ee",
+    });
+    const result = await userService.createUser("Test", "test@test.ee")
+    
+    expect(result).toEqual({ id:1 , name:"Test", email:"test@test.ee"})
+    expect(mockUserRepo.create).toHaveBeenCalled();
+    expect(mockUserRepo.create).toHaveBeenCalledWith({name:"Test", email:"test@test.ee"});
+  });
 
   // TODO: Ülesanne — Puuduv nimi või email viskab vea
   test.todo("viskab vea kui nimi puudub");

@@ -6,4 +6,7 @@ async function resetDb() {
   await prisma.workshop.deleteMany();
 }
 
+beforeEach(async () => {
+  await resetDb();
+});
 module.exports = { resetDb };

@@ -8,8 +8,24 @@ describe("POST /users", () => {
   });
 
   // TODO: Ülesanne — Loob uue kasutaja
-  test.todo("loob uue kasutaja");
+  test("loob uue kasutaja", async () => {
+    const res = await request(app)
+      .post("/users")
+      .send({ name: "Ada", email: "ada@test.com" });
 
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty("id");
+    expect(res.body.name).toBe("Ada");
+    expect(res.body.email).toBe("ada@test.com");
+  });
+
+  test("tagastab 400 kui nimi puudub", async () => {
+    const res = await request(app)
+      .post("/users")
+      .send({ email: "ada@test.com" });
+
+    expect(res.statusCode).toBe(400);
+  });
   // TODO: Ülesanne — Puuduv nimi tagastab 400
   test.todo("tagastab 400 kui nimi puudub");
 

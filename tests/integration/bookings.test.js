@@ -8,8 +8,26 @@ describe("POST /bookings", () => {
   });
 
   // TODO: Ülesanne — Broneering õnnestub (happy path)
-  test.todo("loob broneeringu");
+  test("loob broneeringu", async () => {
+    // Loo esmalt kasutaja ja workshop
+    const user = await request(app)
+      .post("/users")
+      .send({ name: "Ada", email: "ada@test.com" });
 
+    const workshop = await request(app)
+      .post("/workshops")
+      .send({ title: "Testing", capacity: 10 });
+
+    // Nüüd tee broneering
+    const res = await request(app)
+      .post("/bookings")
+      .send({
+        userId: user.body.id,
+        workshopId: workshop.body.id
+      });
+
+    expect(res.statusCode).toBe(201);
+  });
   // TODO: Ülesanne — Workshop on täis → 409
   test.todo("tagastab 409 kui workshop on täis");
 
