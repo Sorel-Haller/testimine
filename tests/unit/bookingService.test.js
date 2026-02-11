@@ -48,9 +48,9 @@ describe("BookingService", () => {
     mockWorkshopRepo.findById.mockResolvedValue({
       id: 1,
       title: "Full Workshop",
-      capacity: 1,
+      capacity: 5,
     });
-    mockBookingRepo.countBookings.mockResolvedValue(1);
+    mockBookingRepo.countBookings.mockResolvedValue(5);
     mockBookingRepo.findByUserAndWorkshop.mockResolvedValue(null);
 
     await expect(bookingService.createBooking(1, 1))

@@ -26,11 +26,20 @@ describe("POST /users", () => {
 
     expect(res.statusCode).toBe(400);
   });
-  // TODO: Ülesanne — Puuduv nimi tagastab 400
-  test.todo("tagastab 400 kui nimi puudub");
 
   // TODO: Ülesanne — Puuduv email tagastab 400
-  test.todo("tagastab 400 kui email puudub");
+  test("tagastab 400 kui email puudub", async () => {
+    const res = await request(app)
+      .post("/users")
+      .send({ name: "Ada" });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: "Name and email are required",
+      })
+    );
+  });
 
   // TODO: Ülesanne — Duplikaat-email tagastab 400
   test.todo("tagastab 400 kui email on juba kasutusel");
