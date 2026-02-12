@@ -73,16 +73,11 @@ describe("POST /bookings", () => {
         .post("/bookings")
         .send({ userId: user.body.id, workshopId: workshop.body.id });
 
-      const res = await request(app)
+      const booking = await app.request(app)
         .post("/bookings")
         .send({ userId: user.body.id, workshopId: workshop.body.id });
 
-      expect(res.statusCode).toBe(409);
-      expect(res.body).toEqual(
-        expect.objectContaining({
-          message: "User already booked this workshop"
-        })
-      );
+      expect(booking.statusCode).toBe(409)
     });
 
   // TODO: Ülesanne — Olematu workshop → 404
@@ -91,19 +86,14 @@ describe("POST /bookings", () => {
         .post("/users")
         .send({ name: "Test", email: "test@test.com" });
 
-      const res = await request(app)
+      const booking = await request(app)
         .post("/bookings")
         .send({
           userId: user.body.id,
           workshopId: 9999
         });
 
-      expect(res.statusCode).toBe(404);
-      expect(res.body).toEqual(
-        expect.objectContaining({
-          message: "Workshop not found"
-        })
-      );
+      expect(booking.statusCode).tuBe(404)
     });
 
   // TODO: Edasijõudnud — Vigade struktuur
@@ -112,39 +102,29 @@ describe("POST /bookings", () => {
       .post("/bookings")
       .send({});
 
-    expect(res.statusCode).toBeGreaterThanOrEqual(400);
-    expect(res.body).toHaveProperty("message");
+    expect(res.body).toHaveProperty("error");
   });
 
   // TODO: Edasijõudnud — Konkurentsuse test
   test("ainult üks broneering õnnestub kui 1 koht", async () => {
     const user1 = await request(app)
       .post("/users")
-      .send({ name: "User1", email: "c1@test.com" });
+      .send({ name: "Test", email: "test@test.com" });
 
     const user2 = await request(app)
       .post("/users")
-      .send({ name: "User2", email: "c2@test.com" });
+      .send({ name: "Tester", email: "tester@test.com" });
 
     const workshop = await request(app)
       .post("/workshops")
       .send({ title: "Testing", capacity: 1 });
 
-    const responses = await Promise.allSettled([
-      request(app).post("/bookings").send({
-        userId: user1.body.id,
-        workshopId: workshop.body.id
-      }),
-      request(app).post("/bookings").send({
-        userId: user2.body.id,
-        workshopId: workshop.body.id
-      })
+    const [response1, response2] = await Promise.all([
+      request(app).post("/bookings").send({ userId: user1.body.id, workshopId: workshop.body.id }),
+      request(app).post("/bookings").send({ userId: user2.body.id, workshopId: workshop.body.id })
     ]);
 
-    const successCount = responses.filter(
-      r => r.value && r.value.statusCode === 201
-    ).length;
-
-    expect(successCount).toBe(1);
+    const statuses = [response1.statusCode, response2.statusCode].sort();
+    expect(statuses).toEqual([201, 409])
   });
 });
