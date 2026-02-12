@@ -128,9 +128,7 @@ describe("BookingService", () => {
       mockBookingRepo.countBookings.mockResolvedValue(2);
       mockBookingRepo.findByUserAndWorkshop.mockResolvedValue(null);
 
-      await expect(
-        bookingService.createBooking(1, 1)
-      ).rejects.toThrow("Workshop is full");
+      await expect( bookingService.createBooking(1, 1)).rejects.toThrow("Workshop is full");
 
       expect(mockBookingRepo.createBooking).not.toHaveBeenCalled();
     });
