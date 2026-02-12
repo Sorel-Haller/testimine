@@ -11,18 +11,19 @@ describe("POST /users", () => {
   test("loob uue kasutaja", async () => {
     const res = await request(app)
       .post("/users")
-      .send({ name: "Ada", email: "ada@test.com" });
+      .send({ name: "Test", email: "" });
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("id");
-    expect(res.body.name).toBe("Ada");
-    expect(res.body.email).toBe("ada@test.com");
+    expect(res.body).toHaveProperty("name", "Test");
+    expect(res.body).toHaveProperty("email", "test@test.ee");
   });
 
+  // TODO: Ülesanne — Puuduv nimi tagastab 400
   test("tagastab 400 kui nimi puudub", async () => {
     const res = await request(app)
       .post("/users")
-      .send({ email: "ada@test.com" });
+      .send({ name: null, email: "test@test.com" });
 
     expect(res.statusCode).toBe(400);
   });
@@ -31,7 +32,7 @@ describe("POST /users", () => {
   test("tagastab 400 kui email puudub", async () => {
     const res = await request(app)
       .post("/users")
-      .send({ name: "Ada" });
+      .send({ name: "Test", email: null });
 
     expect(res.statusCode).toBe(400);
     expect(res.body).toEqual(
@@ -42,5 +43,16 @@ describe("POST /users", () => {
   });
 
   // TODO: Ülesanne — Duplikaat-email tagastab 400
-  test.todo("tagastab 400 kui email on juba kasutusel");
+  test("tagastab 400 kui email on juba kasutusel", async () => {
+    await request(app)
+      .post("/users")
+      .send({ name: "Test", email: "test@test.ee" });
+
+    const res = await request(app)
+      .post("/users")
+      .send({ name: "Test2", email: "test@test.ee" });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).tohHaveProperty("Error");
+  });
 });

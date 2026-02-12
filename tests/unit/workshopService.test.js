@@ -13,26 +13,43 @@ describe("WorkshopService", () => {
     workshopService = new WorkshopService(mockWorkshopRepo);
   });
 
-  // TODO: Ülesanne — Workshop loomine õnnestub
+  // ✅ Workshop loomine õnnestub
   test("loob workshop'i edukalt", async () => {
-    mockWorkshopRepo.create.mockResolvedvalue({
+    mockWorkshopRepo.create.mockResolvedValue({
       id: 1,
       title: "test workshop",
-      capacity: 20
+      capacity: 20,
     });
+
+    const result = await workshopService.createWorkshop(
+      "test workshop",
+      20
+    );
+
+    expect(result).toEqual({
+      id: 1,
+      title: "test workshop",
+      capacity: 20,
+    });
+
     expect(mockWorkshopRepo.create).toHaveBeenCalled();
     expect(mockWorkshopRepo.create).toHaveBeenCalledWith({
       title: "test workshop",
-      capacity: 20
+      capacity: 20,
     });
   });
 
-  // TODO: Ülesanne — Puuduv title või capacity viskab vea
+  // ✅ Puuduv title viskab vea
   test("viskab vea kui title puudub", async () => {
-    await expect(workshopService.createWorkshop("", 20)).rejects.toThrow("Title and capacity are required");
+    await expect(
+      workshopService.createWorkshop("", 20)
+    ).rejects.toThrow("Title and capacity are required");
   });
 
+  // ✅ Puuduv capacity viskab vea
   test("viskab vea kui capacity puudub", async () => {
-    await expect(workshopService.createWorkshop("test workshop", null)).rejects.toThrow("Title and capacity are required")
+    await expect(
+      workshopService.createWorkshop("test workshop", null)
+    ).rejects.toThrow("Title and capacity are required");
   });
 });
